@@ -1,6 +1,7 @@
 import numpy as np
 import h5py
 import os
+import glob
 from scipy.interpolate import interp1d
 from scipy.spatial.transform import Rotation as R
 
@@ -89,9 +90,36 @@ def generate_tlio_hdf5(imu_path, gt_path, outdir):
     print(f"File data.hdf5 written to {outdir}")
 
 if __name__ == "__main__":
-    generate_tlio_hdf5("C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\01_peanuts_light\\imu.csv",
-                       "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\01_peanuts_light\\stamped_groundtruth.txt",
-                        "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\data\\Dataset\\seq01")
-    generate_tlio_hdf5("C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\10_office\\imu.csv",
-                       "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\10_office\\stamped_groundtruth.txt",
-                        "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\data\\Dataset\\seq10")
+
+    # Define the root directory containing your raw data folders
+    root_dir = r"C:\Users\dhjen\Desktop\ETH Zurich\school\3d_vision\TLIO\EDS"
+    output_base = r"C:\Users\dhjen\Desktop\ETH Zurich\school\3d_vision\TLIO\data\Dataset"
+
+    # Use glob to find all subdirectories in the EDS folder
+    # This looks for any folder inside root_dir
+    folders = glob.glob(os.path.join(root_dir, "*/"))
+
+    for folder_path in sorted(folders):
+        # Get the folder name (e.g., '01_peanuts_light')
+        folder_name = os.path.basename(os.path.normpath(folder_path))
+        
+        # Extract the sequence number for the output (e.g., 'seq01')
+        # This assumes the folder starts with a 2-digit number
+        seq_num = folder_name.split('_')[0]
+        output_name = f"seq{seq_num}"
+        
+        # Construct the full paths for the required files
+        imu_path = os.path.join(folder_path, "imu.csv")
+        gt_path = os.path.join(folder_path, "stamped_groundtruth.txt")
+        output_path = os.path.join(output_base, output_name)
+        
+        # Ensure the output directory exists
+        os.makedirs(output_base, exist_ok=True)
+
+        print(f"Processing: {folder_name} -> {output_name}")
+        
+        # Call your function
+        try:
+            generate_tlio_hdf5(imu_path, gt_path, output_path)
+        except Exception as e:
+            print(f"Failed to process {folder_name}: {e}")

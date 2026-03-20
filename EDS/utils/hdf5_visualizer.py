@@ -4,6 +4,16 @@ import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 
 def verify_tlio_data(h5_path):
+
+    with h5py.File(h5_path, "r") as f:
+        acc = f['accel_dcalibrated'][:]
+        vel = f['vio_v'][:]
+        
+        print(f"Accel Max: {np.max(acc, axis=0)}")
+        print(f"Accel Mean: {np.mean(acc, axis=0)}") # Should be very close to 0
+        print(f"Velocity Max: {np.max(vel, axis=0)}")
+        print(f"Velocity Mean: {np.mean(vel, axis=0)}")
+        
     with h5py.File(h5_path, 'r') as f:
         ts = f['ts'][:]
         accel = f['accel_dcalibrated'][:] # Gravity should be GONE from this
@@ -68,4 +78,4 @@ def verify_tlio_data(h5_path):
     plt.show()
 
 if __name__ == "__main__":
-    verify_tlio_data("C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\data\\Dataset\\seq10\\data.hdf5")
+    verify_tlio_data("C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\data\\Dataset\\seq01\\data.hdf5")
