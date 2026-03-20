@@ -37,7 +37,7 @@ def generate_tlio_hdf5(imu_path, gt_path, outdir):
     # 3. Calculations
     print("Processing physics (Gravity & Velocity)...")
     q_objs = R.from_quat(q_xyzw)
-    g_world = np.array([0, 0, 9.81])
+    g_world = np.array([0, 0, -9.81])
     
     # Gravity compensation for 'accel_dcalibrated'
     accel = accel_raw - q_objs.inv().apply(g_world)
@@ -91,4 +91,7 @@ def generate_tlio_hdf5(imu_path, gt_path, outdir):
 if __name__ == "__main__":
     generate_tlio_hdf5("C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\01_peanuts_light\\imu.csv",
                        "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\01_peanuts_light\\stamped_groundtruth.txt",
-                        ".")
+                        "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\data\\Dataset\\seq01")
+    generate_tlio_hdf5("C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\10_office\\imu.csv",
+                       "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\EDS\\10_office\\stamped_groundtruth.txt",
+                        "C:\\Users\\dhjen\\Desktop\\ETH Zurich\\school\\3d_vision\\TLIO\\data\\Dataset\\seq10")
